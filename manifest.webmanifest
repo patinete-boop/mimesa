@@ -1,0 +1,23 @@
+{
+"name": "Mesa mezclas", 
+"scope": "/", 
+"start_url": "index.html", 
+"theme_color": "#000000", 
+"background_color": "#000000", 
+"short_name": "Sonidos", 
+"description": "mesa de mezclas muy basica pero funcional", 
+"author": "Joaquin Fdez. POstigo", 
+"lang": "es", 
+"version": "1.0", 
+"display": "fullscreen", 
+"orientation": "any", 
+"icons": [{
+"src": "img/default-icon.png", 
+"sizes": "512x512", 
+"purpose": "any"
+},{
+"src": "img/default-icon.png", 
+"sizes": "512x512", 
+"purpose": "maskable"
+}]
+}

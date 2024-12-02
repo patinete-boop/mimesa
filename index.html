@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es" >
+<head>
+<title>Mesa mezclas</title>
+<meta charset="utf-8">
+<meta name="Description" content="mesa de mezclas muy basica pero funcional"> 
+<meta name="google" value="notranslate"> 
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+<meta name="theme-color" content="#000000"/>
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-title" content="Mesa mezclas" />
+<meta name="generator" content="VisualNEO Web (24.05.22)" />
+<meta name="date" content="2024-12-02 20:23" />
+<meta name="version" content="1.0" />
+<meta name="copyright" content="Copyright 2024 Joaquin Fdez. POstigo" />
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="img/default-icon.png" />
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<link rel="stylesheet" href="css/nzAnimate.min.css">
+<link rel="stylesheet" href="css/neoapp-ui.min.css">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:;">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="X-Frame-Options" content="DENY">
+<meta http-equiv="Referrer-Policy" content="no-referrer">
+<meta http-equiv="Permissions-Policy" content="geolocation=(self)">
+<link rel="stylesheet" href="css/style.css">
+<link rel="shortcut icon" href="img/default-icon.png" />
+</head>
+<body class="neobody" id="ng-app" ng-app="NeoApp" ng-cloak>
+<div ng-controller="NeoApp_CoreCtrl" ng-view ng-cloak id="ng-view" class="app-viewport[NAB._pageEffect]"></div>
+<script type="text/ng-template" id="principal">
+<div class="neopage" id="principal">
+<slider id="Slider1" class="neoapp-slider [NAB.Slider1_effect]" kind="warning" min="0" max="100" ng-model="$root.volumenc1" ng-hide="NAB.Slider1_hidden" ng-disabled="NAB.Slider1_disabled" on-changing="Slider1_changing()">1</slider>
+<button id="PushButton2" type="button"  class="btn btn-danger btn-sm [NAB.PushButton2_effect]" ng-style="NAB.PushButton2_style" ng-hide="NAB.PushButton2_hidden" ng-disabled="NAB.PushButton2_disabled" ng-click="PushButton2_click()"><span style="font-size:;" class="glyphicon glyphicon-remove-circle"></span> Parar</button>
+<button id="PushButton3" type="button"  class="btn btn-info [NAB.PushButton3_effect]" ng-style="NAB.PushButton3_style" ng-hide="NAB.PushButton3_hidden" ng-disabled="NAB.PushButton3_disabled" ng-click="PushButton3_click()">Pausa</button>
+<button id="PushButton1" type="button"  class="btn btn-success btn-lg [NAB.PushButton1_effect]" ng-style="NAB.PushButton1_style" ng-hide="NAB.PushButton1_hidden" ng-disabled="NAB.PushButton1_disabled" ng-click="PushButton1_click()">A</button>
+<h1 id="Headline1" class="[NAB.Headline1_effect]" ng-style="NAB.Headline1_style" ng-hide="NAB.Headline1_hidden" ng-disabled="NAB.Headline1_disabled">Mezclador de DJ- Pureta Stos.Martires</h1>
+<div id="Container1" class="[NAB.Container1_effect]" ng-style="NAB.Container1_style" ng-hide="NAB.Container1_hidden" ng-disabled="NAB.Container1_disabled">
+</div>
+<button id="PushButton13" type="button"  class="btn btn-warning [NAB.PushButton13_effect]" ng-style="NAB.PushButton13_style" ng-hide="NAB.PushButton13_hidden" ng-disabled="NAB.PushButton13_disabled" ng-click="PushButton13_click()">Play</button>
+<div id="Container2" class="[NAB.Container2_effect]" ng-style="NAB.Container2_style" ng-hide="NAB.Container2_hidden" ng-disabled="NAB.Container2_disabled">
+</div>
+<div id="Container3" class="[NAB.Container3_effect]" ng-style="NAB.Container3_style" ng-hide="NAB.Container3_hidden" ng-disabled="NAB.Container3_disabled">
+</div>
+<div id="Container4" class="[NAB.Container4_effect]" ng-style="NAB.Container4_style" ng-hide="NAB.Container4_hidden" ng-disabled="NAB.Container4_disabled">
+</div>
+<slider id="Slider2" class="neoapp-slider [NAB.Slider2_effect]" kind="warning" min="0" max="100" ng-model="$root.volumenc2" ng-hide="NAB.Slider2_hidden" ng-disabled="NAB.Slider2_disabled" on-changing="Slider2_changing()">2</slider>
+<button id="PushButton4" type="button"  class="btn btn-danger btn-sm [NAB.PushButton4_effect]" ng-style="NAB.PushButton4_style" ng-hide="NAB.PushButton4_hidden" ng-disabled="NAB.PushButton4_disabled" ng-click="PushButton4_click()"><span style="font-size:;" class="glyphicon glyphicon-remove-circle"></span> Parar</button>
+<button id="PushButton5" type="button"  class="btn btn-info [NAB.PushButton5_effect]" ng-style="NAB.PushButton5_style" ng-hide="NAB.PushButton5_hidden" ng-disabled="NAB.PushButton5_disabled" ng-click="PushButton5_click()">Pausa</button>
+<button id="PushButton6" type="button"  class="btn btn-success btn-lg [NAB.PushButton6_effect]" ng-style="NAB.PushButton6_style" ng-hide="NAB.PushButton6_hidden" ng-disabled="NAB.PushButton6_disabled" ng-click="PushButton6_click()">B</button>
+<button id="PushButton7" type="button"  class="btn btn-warning [NAB.PushButton7_effect]" ng-style="NAB.PushButton7_style" ng-hide="NAB.PushButton7_hidden" ng-disabled="NAB.PushButton7_disabled" ng-click="PushButton7_click()">Play</button>
+<slider id="Slider3" class="neoapp-slider [NAB.Slider3_effect]" kind="warning" min="0" max="100" ng-model="$root.volumenc3" ng-hide="NAB.Slider3_hidden" ng-disabled="NAB.Slider3_disabled" on-changing="Slider3_changing()">3</slider>
+<button id="PushButton8" type="button"  class="btn btn-danger btn-sm [NAB.PushButton8_effect]" ng-style="NAB.PushButton8_style" ng-hide="NAB.PushButton8_hidden" ng-disabled="NAB.PushButton8_disabled" ng-click="PushButton8_click()"><span style="font-size:;" class="glyphicon glyphicon-remove-circle"></span> Parar</button>
+<button id="PushButton9" type="button"  class="btn btn-info [NAB.PushButton9_effect]" ng-style="NAB.PushButton9_style" ng-hide="NAB.PushButton9_hidden" ng-disabled="NAB.PushButton9_disabled" ng-click="PushButton9_click()">Pausa</button>
+<button id="PushButton10" type="button"  class="btn btn-success btn-lg [NAB.PushButton10_effect]" ng-style="NAB.PushButton10_style" ng-hide="NAB.PushButton10_hidden" ng-disabled="NAB.PushButton10_disabled" ng-click="PushButton10_click()">C</button>
+<button id="PushButton11" type="button"  class="btn btn-warning [NAB.PushButton11_effect]" ng-style="NAB.PushButton11_style" ng-hide="NAB.PushButton11_hidden" ng-disabled="NAB.PushButton11_disabled" ng-click="PushButton11_click()">Play</button>
+<slider id="Slider4" class="neoapp-slider [NAB.Slider4_effect]" kind="warning" min="0" max="100" ng-model="$root.volumenc4" ng-hide="NAB.Slider4_hidden" ng-disabled="NAB.Slider4_disabled" on-changing="Slider4_changing()">4</slider>
+<button id="PushButton12" type="button"  class="btn btn-danger btn-sm [NAB.PushButton12_effect]" ng-style="NAB.PushButton12_style" ng-hide="NAB.PushButton12_hidden" ng-disabled="NAB.PushButton12_disabled" ng-click="PushButton12_click()"><span style="font-size:;" class="glyphicon glyphicon-remove-circle"></span> Parar</button>
+<button id="PushButton14" type="button"  class="btn btn-info [NAB.PushButton14_effect]" ng-style="NAB.PushButton14_style" ng-hide="NAB.PushButton14_hidden" ng-disabled="NAB.PushButton14_disabled" ng-click="PushButton14_click()">Pausa</button>
+<button id="PushButton15" type="button"  class="btn btn-success btn-lg [NAB.PushButton15_effect]" ng-style="NAB.PushButton15_style" ng-hide="NAB.PushButton15_hidden" ng-disabled="NAB.PushButton15_disabled" ng-click="PushButton15_click()">D</button>
+<button id="PushButton16" type="button"  class="btn btn-warning [NAB.PushButton16_effect]" ng-style="NAB.PushButton16_style" ng-hide="NAB.PushButton16_hidden" ng-disabled="NAB.PushButton16_disabled" ng-click="PushButton16_click()">Play</button>
+<h3 id="Headline2" class="[NAB.Headline2_effect]" ng-style="NAB.Headline2_style" ng-hide="NAB.Headline2_hidden" ng-disabled="NAB.Headline2_disabled">Sonando pistas</h3>
+<h3 id="Headline3" class="[NAB.Headline3_effect]" ng-style="NAB.Headline3_style" ng-hide="NAB.Headline3_hidden" ng-disabled="NAB.Headline3_disabled">A</h3>
+<h3 id="Headline4" class="[NAB.Headline4_effect]" ng-style="NAB.Headline4_style" ng-hide="NAB.Headline4_hidden" ng-disabled="NAB.Headline4_disabled">P-A</h3>
+<h3 id="Headline5" class="[NAB.Headline5_effect]" ng-style="NAB.Headline5_style" ng-hide="NAB.Headline5_hidden" ng-disabled="NAB.Headline5_disabled">B</h3>
+<h3 id="Headline6" class="[NAB.Headline6_effect]" ng-style="NAB.Headline6_style" ng-hide="NAB.Headline6_hidden" ng-disabled="NAB.Headline6_disabled">P-B</h3>
+<h3 id="Headline7" class="[NAB.Headline7_effect]" ng-style="NAB.Headline7_style" ng-hide="NAB.Headline7_hidden" ng-disabled="NAB.Headline7_disabled">C</h3>
+<h3 id="Headline8" class="[NAB.Headline8_effect]" ng-style="NAB.Headline8_style" ng-hide="NAB.Headline8_hidden" ng-disabled="NAB.Headline8_disabled">P-C</h3>
+<h3 id="Headline9" class="[NAB.Headline9_effect]" ng-style="NAB.Headline9_style" ng-hide="NAB.Headline9_hidden" ng-disabled="NAB.Headline9_disabled">D</h3>
+<h3 id="Headline10" class="[NAB.Headline10_effect]" ng-style="NAB.Headline10_style" ng-hide="NAB.Headline10_hidden" ng-disabled="NAB.Headline10_disabled">P-D</h3>
+</div>
+</script>
+<script type="text/ng-template" id="NewDialog">
+<div id="DialogContainer1" class="modal-dialog modal-sm"><div class="modal-content" style="height:100%">
+</div></div>
+</script>
+<script src="js/jquery.min.js"></script>
+<script src="js/neogular.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/neoapp.min.js"></script>
+<script src="js/neoapp-ui.min.js"></script>
+<!--<script src="pwabuilder1-sw.root.js"></script>-->
+<!--<script src="js/pwaupdate1.js"></script>-->
+<!--<script src="js/workbox-sw.js"></script>-->
+<script src="js/main.js"></script>
+<script type="module">
+import "./js/pwaupdate1.js";
+const el = document.createElement("pwa-update");
+document.body.appendChild(el);
+</script>
+<noscript>Sorry, JavaScript is required!</noscript>
+</body>
+</html>
