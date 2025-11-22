@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Mesa DJ + Spotify</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+  <h1>Mesa DJ conectada a Spotify</h1>
+
+  <!-- Botón de login -->
+  <button id="loginBtn">Login con Spotify</button>
+
+  <!-- Playlists -->
+  <div>
+    <h3>Tus playlists</h3>
+    <ul id="playlists"></ul>
+  </div>
+
+  <!-- Controles básicos -->
+  <div>
+    <button id="playPauseBtn" disabled>Play/Pause</button>
+    <button id="nextBtn" disabled>Siguiente</button>
+    <button id="prevBtn" disabled>Anterior</button>
+    <input id="vol" type="range" min="0" max="100" value="80">
+    <label for="vol">Volumen</label>
+  </div>
+
+  <!-- SDK de Spotify -->
+  <script src="https://sdk.scdn.co/spotify-player.js"></script>
+
+  <script>
+  // Configuración de tu app en Spotify
+  const CLIENT_ID = "f0bf147de2084f78b676c0fb89482fee";
+  const REDIRECT_URI = "https://patinete-boop.github.io/mimesa/callback";
+
+  // Scopes (permisos)
+  const SCOPES = [
+    "streaming",
+    "user-read-email",
+    "user-read-private",
+    "user-read-playback-state",
+    "user-modify-playback-state",
+    "playlist-read-private"
+  ].join(" ");
+
+  // Utilidad: leer token desde hash
+  function getTokenFromHash() {
+    const hash = window.location.hash.substring(1);
+    const params = new URLSearchParams(hash);
+    return params.get("access_token");
+  }
+
+  // Construir URL de login
+  function getAuthURL() {
+    const auth = new URL("https://accounts.spotify.com/authorize");
+    auth.searchParams.set("client_id", CLIENT_ID);
+    auth.searchParams.set("response_type", "token");
+    auth.searchParams.set("redirect_uri", REDIRECT_URI);
+    auth.searchParams.set("scope", SCOPES);
+    auth.searchParams.set("show_dialog", "true");
+    return auth.toString();
+  }
+
+  // Estado global
+  let accessToken = null;
+  let player = null;
+  let deviceId = null;
+
+  // Login
+  document.getElementById("loginBtn").addEventListener("click", () => {
+    window.location.href = getAuthURL();
+  });
+
+  // Post-login: si volvemos con token en el hash
+  window.addEventListener("load", async () => {
+    accessToken = getTokenFromHash();
+    if (!accessToken) return; // aún no logueado
+
+    // Limpiar el hash de la URL
+    history.replaceState(null, "", window.location.pathname);
+
+    // Cargar playlists
+    await loadPlaylists();
+
+    // Inicializar SDK
+    initPlayer();
+  });
+
+  async function loadPlaylists() {
+    const res = await fetch("https://api.spotify.com/v1/me/playlists", {
+      headers: { Authorization: `Bearer ${accessToken}` }
+    });
+    const data = await res.json();
+    const ul = document.getElementById("playlists");
+    ul.innerHTML = "";
+
+    data.items.forEach(pl => {
+      const li = document.createElement("li");
+      li.textContent = `${pl.name} (${pl.tracks.total} canciones)`;
+      li.style.cursor = "pointer";
+
+      // Al hacer click en una playlist, empezamos a reproducirla
+      li.addEventListener("click", () => startPlaybackWithPlaylist(pl.uri));
+      ul.appendChild(li);
+    });
+  }
+
+  function initPlayer() {
+    window.onSpotifyWebPlaybackSDKReady = () => {
+      player = new Spotify.Player({
+        name: "Mesa DJ HTML (navegador)",
+        getOAuthToken: cb => { cb(accessToken); },
+        volume: 0.8
+      });
+
+      // Eventos
+      player.addListener("ready", ({ device_id }) => {
+        deviceId = device_id;
+        console.log("Device ID", device_id);
+        document.getElementById("playPauseBtn").disabled = false;
+        document.getElementById("nextBtn").disabled = false;
+        document.getElementById("prevBtn").disabled = false;
+      });
+
+      player.addListener("not_ready", ({ device_id }) => {
+        console.warn("Device no listo", device_id);
+      });
+
+      player.addListener("initialization_error", ({ message }) => console.error(message));
+      player.addListener("authentication_error", ({ message }) => console.error(message));
+      player.addListener("account_error", ({ message }) => console.error(message));
+      player.addListener("playback_error", ({ message }) => console.error(message));
+
+      player.connect();
+
+      // Controles
+      document.getElementById("playPauseBtn").addEventListener("click", () => player.togglePlay());
+      document.getElementById("nextBtn").addEventListener("click", () => player.nextTrack());
+      document.getElementById("prevBtn").addEventListener("click", () => player.previousTrack());
+
+      document.getElementById("vol").addEventListener("input", (e) => {
+        const v = Number(e.target.value) / 100;
+        player.setVolume(v);
+      });
+    };
+  }
+
+  async function startPlaybackWithPlaylist(playlistUri) {
+    // Transferir playback al navegador
+    await fetch("https://api.spotify.com/v1/me/player", {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ device_ids: [deviceId], play: true })
+    });
+
+    // Iniciar playback con la playlist
+    await fetch("https://api.spotify.com/v1/me/player/play?device_id=" + deviceId, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ context_uri: playlistUri })
+    });
+  }
+  </script>
+</body>
+</html>
