@@ -2,11 +2,11 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <title>Prueba Login Spotify</title>
+  <title>Prueba URL de Login Spotify</title>
 </head>
 <body>
-  <h1>Prueba de login con Spotify</h1>
-  <button id="loginBtn">Login con Spotify</button>
+  <h1>Prueba de construcción de URL</h1>
+  <button id="loginBtn">Generar URL de login</button>
   <pre id="output"></pre>
 
   <script>
@@ -28,33 +28,13 @@
       auth.searchParams.set("response_type", "token");
       auth.searchParams.set("redirect_uri", REDIRECT_URI);
       auth.searchParams.set("scope", SCOPES);
-      auth.searchParams.set("show_dialog", "true");
+      auth.searchParams.set("show_dialog", "true"); // <- aquí debe aparecer
       return auth.toString();
     }
 
     document.getElementById("loginBtn").addEventListener("click", () => {
-      window.location.href = getAuthURL();
-    });
-
-    // Al volver del login
-    window.addEventListener("load", () => {
-      const hash = window.location.hash.substring(1);
-      if (hash) {
-        const params = new URLSearchParams(hash);
-        const token = params.get("access_token");
-        const scopes = params.get("scope");
-        document.getElementById("output").textContent =
-          "Token recibido:\n" + token + "\n\nScopes:\n" + scopes;
-      } else {
-        const savedHash = localStorage.getItem("spotify_hash");
-        if (savedHash) {
-          const params = new URLSearchParams(savedHash.substring(1));
-          const token = params.get("access_token");
-          const scopes = params.get("scope");
-          document.getElementById("output").textContent =
-            "Token desde localStorage:\n" + token + "\n\nScopes:\n" + scopes;
-        }
-      }
+      const url = getAuthURL();
+      document.getElementById("output").textContent = url;
     });
   </script>
 </body>
