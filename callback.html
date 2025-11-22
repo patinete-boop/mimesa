@@ -7,13 +7,12 @@
 <body>
   <h2>Procesando login de Spotify...</h2>
   <script>
-    // Este script lee el token y redirige a index.html
+    // Guardar el hash con el token en localStorage
     const hash = window.location.hash;
     if (hash) {
-      // Guardamos el hash en localStorage para que index.html lo pueda leer
       localStorage.setItem("spotify_hash", hash);
     }
-    // Redirigir de vuelta a la página principal
+    // Redirigir de vuelta a index.html
     window.location.href = "index.html";
   </script>
 </body>
