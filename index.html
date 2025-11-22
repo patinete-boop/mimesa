@@ -4,20 +4,12 @@
   <meta charset="utf-8">
   <title>Mesa DJ + Spotify</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    body { font-family: system-ui, Arial, sans-serif; margin: 20px; }
-    button[disabled] { opacity: 0.5; cursor: not-allowed; }
-    .status { margin-top: 10px; color: #555; }
-    .error { color: #b00020; }
-    .ok { color: #006400; }
-  </style>
 </head>
 <body>
   <h1>Mesa DJ conectada a Spotify</h1>
 
   <!-- Botón de login -->
   <button id="loginBtn">Login con Spotify</button>
-  <div id="status" class="status">Estado: esperando login…</div>
 
   <!-- Playlists -->
   <div>
@@ -51,18 +43,6 @@
     "user-modify-playback-state",
     "playlist-read-private"
   ].join(" ");
-
-  const statusEl = document.getElementById("status");
-
-  function setStatus(msg, ok=false) {
-    statusEl.textContent = "Estado: " + msg;
-    statusEl.className = "status " + (ok ? "ok" : "");
-  }
-  function setError(msg) {
-    statusEl.textContent = "Error: " + msg;
-    statusEl.className = "status error";
-    console.error(msg);
-  }
 
   // Utilidad: leer token desde hash
   function getTokenFromHash() {
@@ -102,103 +82,74 @@
         accessToken = params.get("access_token");
       }
     }
-    if (!accessToken) {
-      setStatus("pulsa Login con Spotify");
-      return;
-    }
+    if (!accessToken) return; // aún no logueado
 
-    // Limpiar hash y marca que estamos autenticados
     history.replaceState(null, "", window.location.pathname);
-    setStatus("autenticado, cargando playlists…", true);
 
-    try {
-      await loadPlaylists();
-      initPlayer();
-    } catch (e) {
-      setError("no se pudieron cargar playlists: " + (e?.message || e));
-    }
+    await loadPlaylists();
   });
 
   async function loadPlaylists() {
     const res = await fetch("https://api.spotify.com/v1/me/playlists", {
       headers: { Authorization: `Bearer ${accessToken}` }
     });
-    if (!res.ok) {
-      const txt = await res.text();
-      throw new Error("API playlists respondió " + res.status + ": " + txt);
-    }
     const data = await res.json();
     const ul = document.getElementById("playlists");
     ul.innerHTML = "";
-
-    if (!data.items || data.items.length === 0) {
-      setStatus("no hay playlists disponibles", true);
-      return;
-    }
 
     data.items.forEach(pl => {
       const li = document.createElement("li");
       li.textContent = `${pl.name} (${pl.tracks.total} canciones)`;
       li.style.cursor = "pointer";
+
+      // Al hacer click en una playlist, empezamos a reproducirla
       li.addEventListener("click", () => startPlaybackWithPlaylist(pl.uri));
       ul.appendChild(li);
     });
   }
 
-  function initPlayer() {
-    window.onSpotifyWebPlaybackSDKReady = () => {
-      player = new Spotify.Player({
-        name: "Mesa DJ HTML (navegador)",
-        getOAuthToken: cb => { cb(accessToken); },
-        volume: 0.8
-      });
+  // Definimos directamente la función que el SDK espera
+  window.onSpotifyWebPlaybackSDKReady = () => {
+    player = new Spotify.Player({
+      name: "Mesa DJ HTML (navegador)",
+      getOAuthToken: cb => { cb(accessToken); },
+      volume: 0.8
+    });
 
-      // Eventos del SDK
-      player.addListener("ready", async ({ device_id }) => {
-        deviceId = device_id;
-        console.log("Device listo con ID:", device_id);
-        setStatus("dispositivo listo, transfiriendo reproducción…", true);
+    // Eventos
+    player.addListener("ready", ({ device_id }) => {
+      deviceId = device_id;
+      console.log("Device listo con ID:", device_id);
+      document.getElementById("playPauseBtn").disabled = false;
+      document.getElementById("nextBtn").disabled = false;
+      document.getElementById("prevBtn").disabled = false;
+    });
 
-        // Habilitar botones
-        document.getElementById("playPauseBtn").disabled = false;
-        document.getElementById("nextBtn").disabled = false;
-        document.getElementById("prevBtn").disabled = false;
+    player.addListener("not_ready", ({ device_id }) => {
+      console.warn("Device no listo", device_id);
+    });
 
-        // Transferir playback automáticamente al navegador
-        try {
-          await transferPlaybackToBrowser();
-          setStatus("reproducción en el navegador, selecciona una playlist o usa los controles", true);
-        } catch (e) {
-          setError("no se pudo transferir la reproducción: " + (e?.message || e));
-        }
-      });
+    player.addListener("initialization_error", ({ message }) => console.error(message));
+    player.addListener("authentication_error", ({ message }) => console.error(message));
+    player.addListener("account_error", ({ message }) => console.error(message));
+    player.addListener("playback_error", ({ message }) => console.error(message));
 
-      player.addListener("not_ready", ({ device_id }) => {
-        console.warn("Device no listo", device_id);
-        setStatus("dispositivo no listo, reintenta recargar la página");
-      });
+    player.connect();
 
-      player.addListener("initialization_error", ({ message }) => setError("init: " + message));
-      player.addListener("authentication_error", ({ message }) => setError("auth: " + message));
-      player.addListener("account_error", ({ message }) => setError("cuenta: " + message));
-      player.addListener("playback_error", ({ message }) => setError("playback: " + message));
+    // Controles
+    document.getElementById("playPauseBtn").addEventListener("click", () => player.togglePlay());
+    document.getElementById("nextBtn").addEventListener("click", () => player.nextTrack());
+    document.getElementById("prevBtn").addEventListener("click", () => player.previousTrack());
 
-      player.connect();
+    document.getElementById("vol").addEventListener("input", (e) => {
+      const v = Number(e.target.value) / 100;
+      player.setVolume(v);
+    });
+  };
 
-      // Controles
-      document.getElementById("playPauseBtn").addEventListener("click", () => player.togglePlay());
-      document.getElementById("nextBtn").addEventListener("click", () => player.nextTrack());
-      document.getElementById("prevBtn").addEventListener("click", () => player.previousTrack());
-
-      document.getElementById("vol").addEventListener("input", (e) => {
-        const v = Number(e.target.value) / 100;
-        player.setVolume(v);
-      });
-    };
-  }
-
-  async function transferPlaybackToBrowser() {
-    const res = await fetch("https://api.spotify.com/v1/me/player", {
+  async function startPlaybackWithPlaylist(playlistUri) {
+    // Transferir playback al navegador
+    await fetch("https://api.spotify.com/v1/me/player", {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -206,18 +157,9 @@
       },
       body: JSON.stringify({ device_ids: [deviceId], play: true })
     });
-    if (!res.ok) {
-      const txt = await res.text();
-      throw new Error("API transfer respondió " + res.status + ": " + txt);
-    }
-  }
-
-  async function startPlaybackWithPlaylist(playlistUri) {
-    // Transferir playback al navegador si aún no lo está
-    try { await transferPlaybackToBrowser(); } catch (e) { setError(e.message); }
 
     // Iniciar playback con la playlist
-    const res = await fetch("https://api.spotify.com/v1/me/player/play?device_id=" + deviceId, {
+    await fetch("https://api.spotify.com/v1/me/player/play?device_id=" + deviceId, {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -225,12 +167,6 @@
       },
       body: JSON.stringify({ context_uri: playlistUri })
     });
-    if (!res.ok) {
-      const txt = await res.text();
-      setError("API play respondió " + res.status + ": " + txt);
-    } else {
-      setStatus("reproduciendo playlist en el navegador", true);
-    }
   }
   </script>
 </body>
