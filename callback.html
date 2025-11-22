@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Callback Spotify</title>
+</head>
+<body>
+  <h2>Procesando login de Spotify...</h2>
+  <script>
+    // Este script lee el token y redirige a index.html
+    const hash = window.location.hash;
+    if (hash) {
+      // Guardamos el hash en localStorage para que index.html lo pueda leer
+      localStorage.setItem("spotify_hash", hash);
+    }
+    // Redirigir de vuelta a la página principal
+    window.location.href = "index.html";
+  </script>
+</body>
+</html>
