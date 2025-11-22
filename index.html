@@ -72,18 +72,21 @@
     window.location.href = getAuthURL();
   });
 
-  // Post-login: si volvemos con token en el hash
+  // Post-login: si volvemos con token en el hash o desde callback.html
   window.addEventListener("load", async () => {
     accessToken = getTokenFromHash();
+    if (!accessToken) {
+      const savedHash = localStorage.getItem("spotify_hash");
+      if (savedHash) {
+        const params = new URLSearchParams(savedHash.substring(1));
+        accessToken = params.get("access_token");
+      }
+    }
     if (!accessToken) return; // aún no logueado
 
-    // Limpiar el hash de la URL
     history.replaceState(null, "", window.location.pathname);
 
-    // Cargar playlists
     await loadPlaylists();
-
-    // Inicializar SDK
     initPlayer();
   });
 
@@ -117,7 +120,7 @@
       // Eventos
       player.addListener("ready", ({ device_id }) => {
         deviceId = device_id;
-        console.log("Device ID", device_id);
+        console.log("Device listo con ID:", device_id);
         document.getElementById("playPauseBtn").disabled = false;
         document.getElementById("nextBtn").disabled = false;
         document.getElementById("prevBtn").disabled = false;
